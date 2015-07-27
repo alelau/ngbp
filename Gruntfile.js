@@ -20,6 +20,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-html2js');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-connect-prism');
+    grunt.loadNpmTasks('grunt-contrib-compress');
 
     /**
      * Load in our build configuration file.
@@ -473,6 +474,18 @@ module.exports = function (grunt) {
                 options: {}
             }
         },
+        // use a function to return the output file
+        compress: {
+            main: {
+                options: {
+                    archive: 'release/<%= pkg.name %>.zip'
+                },
+                files: [{
+                    expand: true,
+                    src: ['bin/**/*.*']
+                }]
+            }
+        },
 
         /**
          * And for rapid development, we have a watch set up that checks to see if
@@ -617,6 +630,11 @@ module.exports = function (grunt) {
      * The `record` task gets your app ready for development by recording the request response data between client and server
      */
     grunt.registerTask('record', ['build', 'karma:unit', 'prism:record', 'connect:livereload', 'delta']);
+
+    /**
+     * The release task is to bumpup the version default and compress the package.
+     */
+    grunt.registerTask('release', ['default', 'compress']);//'bumpup', 'bump',
 
     /**
      * The default task is to build and compile.
