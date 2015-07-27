@@ -19,6 +19,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-ngmin');
     grunt.loadNpmTasks('grunt-html2js');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-connect-prism');
 
     /**
      * Load in our build configuration file.
@@ -414,7 +415,7 @@ module.exports = function (grunt) {
                 hostname: "0.0.0.0",
                 middleware: function (connect, options, middlewares) {
                     return [
-                        //require('grunt-connect-prism/middleware'),
+                        require('grunt-connect-prism/middleware'),
                         require('connect-livereload')({
                             port: 35729
                         }),
@@ -434,6 +435,42 @@ module.exports = function (grunt) {
                 options: {
                     open: false
                 }
+            }
+        },
+        prism: {
+            options: {
+                mocksPath: './mocks', /* optional */
+                //mode : 'mock',
+                host: 'localhost',
+                port: 8090, /* optional */
+                changeOrigin: true,
+                https: false,
+                mockFilenameGenerator: 'humanReadable'
+            },
+            server: {
+                options: {
+                    mode: 'mock',
+                    host: 'localhost',
+                    context: '/api'
+                }
+            },
+            record: {
+                options: {
+                    //   mode: 'mock',
+                    mode: 'record',
+                    //  host: 'localhost'
+                    //delay: 'slow',
+                    //context : '/api'
+                    //port : 63523,
+                    //host: 'efgdevfront.newaccess.ch',
+                    //    delay: 'slow',
+                    context: '/api',
+                    port: 81
+
+                }
+            },
+            e2e: {
+                options: {}
             }
         },
 
@@ -571,6 +608,15 @@ module.exports = function (grunt) {
      */
     grunt.renameTask('watch', 'delta');
     grunt.registerTask('watch', ['build', 'karma:unit', 'connect:livereload', 'delta']);
+
+    /**
+     * The `mock` task gets your app ready for development by using a set of files to mock the server response
+     */
+    grunt.registerTask('mock', ['build', 'karma:unit', 'prism', 'connect:livereload', 'delta']);
+    /**
+     * The `record` task gets your app ready for development by recording the request response data between client and server
+     */
+    grunt.registerTask('record', ['build', 'karma:unit', 'prism:record', 'connect:livereload', 'delta']);
 
     /**
      * The default task is to build and compile.
