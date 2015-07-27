@@ -415,6 +415,9 @@ module.exports = function (grunt) {
                 middleware: function (connect, options, middlewares) {
                     return [
                         //require('grunt-connect-prism/middleware'),
+                        require('connect-livereload')({
+                            port: 35729
+                        }),
                         connect.static('.tmp'),
                         connect().use('/build', connect.static('./build')),
                         connect.static('./build')
