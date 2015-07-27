@@ -21,6 +21,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-connect-prism');
     grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-ng-constant');
 
     /**
      * Load in our build configuration file.
@@ -486,6 +487,47 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        ngconstant: {
+            // Options for all targets
+            options: {
+                constants: {
+                    app: '<%= pkg.name %>',
+                    VERSION: '<%= pkg.version %>'
+                },
+                space: '  ',
+                wrap: '{%= __ngModule %}',
+                name: '<%= pkg.name %>',
+                deps: '<%=app_files.modules%>',
+                dest: 'src/app/_modules.js'
+            },
+            // Environment targets
+            mock: {
+                constants: {
+                    ENV: {
+                        name: 'mock',
+                        apiEndpoint: '/'
+                    }
+                }
+
+            },
+            development: {
+                constants: {
+                    ENV: {
+                        name: 'development',
+                        apiEndpoint: 'http://dev.server.com'
+                    }
+                }
+
+            },
+            production: {
+                constants: {
+                    ENV: {
+                        name: 'production',
+                        apiEndpoint: ''
+                    }
+                }
+            }
+        },
 
         /**
          * And for rapid development, we have a watch set up that checks to see if
@@ -645,7 +687,7 @@ module.exports = function (grunt) {
      * The `build` task gets your app ready to run for development and testing.
      */
     grunt.registerTask('build', [
-        'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
+        'clean', 'ngconstant:development', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
         'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
         'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
         'karma:continuous'
@@ -698,7 +740,8 @@ module.exports = function (grunt) {
                     data: {
                         scripts: jsFiles,
                         styles: cssFiles,
-                        version: grunt.config('pkg.version')
+                        version: grunt.config('pkg.version'),
+                        app: grunt.config('pkg.name')
                     }
                 });
             }
