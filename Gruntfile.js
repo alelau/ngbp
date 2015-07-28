@@ -22,6 +22,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-connect-prism');
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-ng-constant');
+    grunt.loadNpmTasks('grunt-protractor-runner');
 
     /**
      * Load in our build configuration file.
@@ -529,6 +530,23 @@ module.exports = function (grunt) {
             }
         },
 
+        protractor: {
+            options: {
+                configFile: "node_modules/protractor/example/conf.js", // Default config file
+                keepAlive: true, // If false, the grunt process stops when the test fails.
+                noColor: false, // If true, protractor will not use colors in its output.
+                args: {
+                    // Arguments passed to the command
+                }
+            },
+            target: {// Grunt requires at least one target to run so you can simply put 'all: {}' here too.
+                options: {
+                    configFile: "karma/e2e.conf.js", // Target-specific config file
+                    args: {} // Target-specific arguments
+                }
+            }
+        },
+
         /**
          * And for rapid development, we have a watch set up that checks to see if
          * any of the files listed below change, and then to execute the listed
@@ -692,6 +710,8 @@ module.exports = function (grunt) {
         'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
         'karma:continuous'
     ]);
+
+    grunt.registerTask('e2e', ['build', 'connect:protractor', 'protractor:target']);
 
     /**
      * The `compile` task gets your app ready for deployment by concatenating and

@@ -34,7 +34,7 @@ module.exports = {
     app_files: {
         modules:ng_modules_all,
 
-        js: ['src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js'],
+        js: ['src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js','!src/**/*.e2e.js'],
         jsunit: ['src/**/*.spec.js'],
 
         coffee: ['src/**/*.coffee', '!src/**/*.spec.coffee'],

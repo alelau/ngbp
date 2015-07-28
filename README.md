@@ -11,8 +11,9 @@ Install Node.js and then:
 ```sh
 $ git clone git://github.com/joshdmiller/ng-boilerplate
 $ cd ng-boilerplate
-$ sudo npm -g install grunt-cli karma bower
+$ sudo npm -g install grunt-cli karma bower protractor
 $ npm install
+$ node ./node_modules/protractor/bin/webdriver-manager update
 $ bower install
 $ grunt watch
 ```
